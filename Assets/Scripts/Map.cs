@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class Map : MonoBehaviour
 {
@@ -71,6 +72,7 @@ public class Map : MonoBehaviour
 
         // Use a color array since this is much quicker than calling texture.SetPixel for each pixel in the texture.
         Color[] textureColors = new Color[terrainResolution * terrainResolution];
+        Color[] heightmap = new Color[terrainResolution * terrainResolution];
 
         // Finds the corect color for each pixel in the texture 
         for (int y = 0; y < terrainResolution; y++)
@@ -78,6 +80,8 @@ public class Map : MonoBehaviour
             for (int x = 0; x < terrainResolution; x++)
             {
                 float terrainheight = terrain.terrainData.GetHeight(y, x) + terrain.transform.position.y;
+                float heightColour = (terrainheight - terrain.transform.position.y) / terrain.terrainData.heightmapHeight;
+                heightmap[x + (y * terrainResolution)] = new Color(heightColour, heightColour, heightColour, 1);
                 if (terrainheight > waterLevel)
                 {
                     textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, 1); // Color for terrain above waterLevel
@@ -99,6 +103,16 @@ public class Map : MonoBehaviour
         texture.SetPixels(textureColors);
         texture.Apply();
         mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
+
+        Texture2D heightTexture = new Texture2D(terrainResolution, terrainResolution);
+        heightTexture.SetPixels(heightmap);
+        heightTexture.Apply();
+        //mapPlane.GetComponent<Renderer>().material.
+
+        //save map as png for debugging
+        //byte[] bytes = heightTexture.EncodeToPNG();
+        //File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
+
     }
 
     private void Zoom()
