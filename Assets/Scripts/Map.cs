@@ -72,6 +72,53 @@ public class Map : MonoBehaviour
 
         // Use a color array since this is much quicker than calling texture.SetPixel for each pixel in the texture.
         Color[] textureColors = new Color[terrainResolution * terrainResolution];
+
+        // Finds the corect color for each pixel in the texture 
+        for (int y = 0; y < terrainResolution; y++)
+        {
+            for (int x = 0; x < terrainResolution; x++)
+            {
+                float terrainheight = terrain.terrainData.GetHeight(y, x) + terrain.transform.position.y;
+                float heightColour = terrain.terrainData.GetHeight(y, x) / terrain.terrainData.heightmapHeight;
+                if (terrainheight > waterLevel)
+                {
+                    textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, heightColour); // Color for terrain above waterLevel
+                }
+                else if (terrainheight > waterLevel - 6)
+                {
+                    textureColors[x + (y * terrainResolution)] = new Color(1, 1, 1, heightColour);//white for shallow water, less than 6 mineters deep
+                }
+                else
+                {
+                    textureColors[x + (y * terrainResolution)] = new Color(0, Mathf.Floor((terrainheight - lowestPointBelowWater - 6) / (waterLevel - lowestPointBelowWater - 6) * 10) / 10, 1, heightColour); // Color between blue(0,0,1,1) and cyan(0,1,1,1).
+                }
+            }
+        }
+
+        // Creates the texture for the planeMap and sets the colors using the color array.
+        Texture2D texture = new Texture2D(terrainResolution, terrainResolution);
+        texture.SetPixels(textureColors);
+        texture.Apply();
+        mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
+
+        //debug
+        //byte[] bytes = texture.EncodeToPNG();
+        //File.WriteAllBytes(Application.dataPath + "/../debug_heightmap.png", bytes);
+    }
+
+
+    /*
+        private void CreateTextureold()
+    {
+        // Places the mapPlane over the terrain and makes it the same size as the terrain.       
+        mapPlane.transform.position = new Vector3(terrain.transform.position.x + terrain.terrainData.size.x / 2, terrain.transform.position.y, terrain.transform.position.z + terrain.terrainData.size.z / 2);
+        mapPlane.transform.localScale = new Vector3(terrain.terrainData.size.x / 10, 0, terrain.terrainData.size.z / 10);
+
+        // Place the mapPlane on a seperate layer only the attached camera can see.
+        mapPlane.layer = LayerMask.NameToLayer("Map");
+
+        // Use a color array since this is much quicker than calling texture.SetPixel for each pixel in the texture.
+        Color[] textureColors = new Color[terrainResolution * terrainResolution];
         Color[] heightmap = new Color[terrainResolution * terrainResolution];
 
         // Finds the corect color for each pixel in the texture 
@@ -113,7 +160,7 @@ public class Map : MonoBehaviour
         //byte[] bytes = heightTexture.EncodeToPNG();
         //File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
 
-    }
+    }*/
 
     private void Zoom()
     {
