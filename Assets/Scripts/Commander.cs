@@ -8,6 +8,7 @@ public class Commander : PlayerCharacter
     [SerializeField]
     private Map map;
     private Renderer rend;
+    private bool collisionMap = false;
 
     // Use this for initialization
     protected override void Start()
@@ -18,30 +19,33 @@ public class Commander : PlayerCharacter
         map = Instantiate(map);
         map.SetCameraPosition(submarine.transform.position);
         rend = map.GetComponentInChildren<Renderer>();
-        //rend = transform.Find("MapPlane").gameObject.GetComponent<Renderer>(); //moet dit niet ook kunnen met map.GetComponentInChildren<>() oid
+        rend.material.SetFloat("_Height", 1f);
     }
 
     protected void Update()
     {
-        float subHeight = (submarine.transform.position.y - Terrain.activeTerrain.transform.position.y - 6) / Terrain.activeTerrain.terrainData.heightmapHeight;
-        rend.material.SetFloat("_Height", subHeight);
+        rigidbody.AddForce(rigidbody.transform.forward * 200000 * Input.GetAxis("Vertical")); // for debugging
+        rigidbody.AddTorque(rigidbody.transform.up * 25000000* Input.GetAxis("Horizontal"));
+
+
+        if (collisionMap)
+        {
+            float subHeight = (submarine.transform.position.y - Terrain.activeTerrain.transform.position.y - 7.5f) / Terrain.activeTerrain.terrainData.heightmapHeight;
+            rend.material.SetFloat("_Height", subHeight);
+        }
+    }
+
+    public void toggleCollisionMap()
+    {
+        if (collisionMap)
+        {
+            collisionMap = false;
+            rend.material.SetFloat("_Height", 1f);
+        }
+        else
+        {
+            collisionMap = true;
+        }
+        
     }
 }
-
-/*
- * void Start()
-    {
-        rend = GetComponent<Renderer> ();
-
-        // Use the Specular shader on the material
-        rend.material.shader = Shader.Find("Specular");
-    }
-
-    void Update()
-    {
-        // Animate the Shininess value
-        float shininess = Mathf.PingPong(Time.time, 1.0f);
-        rend.material.SetFloat("_Shininess", shininess);
-    }
-}
-*/

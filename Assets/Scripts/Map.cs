@@ -5,9 +5,10 @@ using System.IO;
 
 public class Map : MonoBehaviour
 {
-    private GameObject mapPlane;
+    private GameObject mapPlane, backgroundPlane;
     private Terrain terrain;
     private Camera camera;
+    private float submarineDiepgang = 7.5f;
 
     [SerializeField]
     private float detectionRadius = 10f;
@@ -22,6 +23,7 @@ public class Map : MonoBehaviour
     private void Awake()
     {
         mapPlane = transform.Find("MapPlane").gameObject;
+        backgroundPlane = transform.Find("BackgroundPlane").gameObject;
         terrain = Terrain.activeTerrain;
         terrainResolution = terrain.terrainData.heightmapResolution - 1;
 
@@ -65,10 +67,15 @@ public class Map : MonoBehaviour
     {
         // Places the mapPlane over the terrain and makes it the same size as the terrain.       
         mapPlane.transform.position = new Vector3(terrain.transform.position.x + terrain.terrainData.size.x / 2, terrain.transform.position.y, terrain.transform.position.z + terrain.terrainData.size.z / 2);
-        mapPlane.transform.localScale = new Vector3(terrain.terrainData.size.x / 10, 0, terrain.terrainData.size.z / 10);
+        mapPlane.transform.localScale = new Vector3(terrain.terrainData.size.x / 10, 1, terrain.terrainData.size.z / 10);
 
-        // Place the mapPlane on a seperate layer only the attached camera can see.
+        // Places the backgroundPlane over the terrain and makes it the same size as the terrain but 5 below the mapPlane.   
+        backgroundPlane.transform.position = new Vector3(terrain.transform.position.x + terrain.terrainData.size.x / 2, terrain.transform.position.y-5, terrain.transform.position.z + terrain.terrainData.size.z / 2);
+        backgroundPlane.transform.localScale = new Vector3(terrain.terrainData.size.x / 10, 1, terrain.terrainData.size.z / 10);
+
+        // Place the mapPlane and backgroundPlane on a seperate layer only the attached camera can see.
         mapPlane.layer = LayerMask.NameToLayer("Map");
+        backgroundPlane.layer = LayerMask.NameToLayer("Map");
 
         // Use a color array since this is much quicker than calling texture.SetPixel for each pixel in the texture.
         Color[] textureColors = new Color[terrainResolution * terrainResolution];
@@ -78,19 +85,19 @@ public class Map : MonoBehaviour
         {
             for (int x = 0; x < terrainResolution; x++)
             {
-                float terrainheight = terrain.terrainData.GetHeight(y, x) + terrain.transform.position.y;
-                float heightColour = terrain.terrainData.GetHeight(y, x) / terrain.terrainData.heightmapHeight;
+                float terrainheight = terrain.terrainData.GetHeight(x, y) + terrain.transform.position.y;
+                float heightAlpha = terrain.terrainData.GetHeight(x, y) / terrain.terrainData.heightmapHeight;
                 if (terrainheight > waterLevel)
                 {
-                    textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, heightColour); // Color for terrain above waterLevel
+                    textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, heightAlpha); // Color for terrain above waterLevel
                 }
-                else if (terrainheight > waterLevel - 6)
+                else if (terrainheight > waterLevel - submarineDiepgang)
                 {
-                    textureColors[x + (y * terrainResolution)] = new Color(1, 1, 1, heightColour);//white for shallow water, less than 6 mineters deep
+                    textureColors[x + (y * terrainResolution)] = new Color(1, 1, 1, heightAlpha);//white for shallow water, less than 6 meters deep
                 }
                 else
                 {
-                    textureColors[x + (y * terrainResolution)] = new Color(0, Mathf.Floor((terrainheight - lowestPointBelowWater - 6) / (waterLevel - lowestPointBelowWater - 6) * 10) / 10, 1, heightColour); // Color between blue(0,0,1,1) and cyan(0,1,1,1).
+                    textureColors[x + (y * terrainResolution)] = new Color(0, Mathf.Floor((terrainheight - lowestPointBelowWater - submarineDiepgang) / (waterLevel - lowestPointBelowWater - submarineDiepgang) * 10) / 10, 1, heightAlpha); // Color between blue(0,0,1,1) and cyan(0,1,1,1).
                 }
             }
         }
@@ -99,7 +106,7 @@ public class Map : MonoBehaviour
         Texture2D texture = new Texture2D(terrainResolution, terrainResolution);
         texture.SetPixels(textureColors);
         texture.Apply();
-        mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
+        mapPlane.GetComponent<Renderer>().material.SetTexture("_MainTex", texture);
 
         //debug
         //byte[] bytes = texture.EncodeToPNG();
@@ -155,11 +162,6 @@ public class Map : MonoBehaviour
         heightTexture.SetPixels(heightmap);
         heightTexture.Apply();
         //mapPlane.GetComponent<Renderer>().material.
-
-        //save map as png for debugging
-        //byte[] bytes = heightTexture.EncodeToPNG();
-        //File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
-
     }*/
 
     private void Zoom()
