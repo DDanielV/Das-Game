@@ -1,20 +1,26 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
+﻿using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
-    [SerializeField]
-    InputField networkAddressField;
+    private void Start()
+    {
+        // If we dont start from the StartMenu we host a new game.
+        // This enables starting the game from a different scene than the StartMenu for testing.
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            HostGame();
+        }
+    }
 
     public void HostGame()
     {
         StartHost();
     }
 
-    public void JoinGame()
+    public void JoinGame(string networkAdress)
     {
-        networkAddress = networkAddressField.text;
+        this.networkAddress = networkAdress;
         StartClient();
     }
 }
