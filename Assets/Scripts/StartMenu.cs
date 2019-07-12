@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
 
 public class StartMenu : MonoBehaviour
 {
     [SerializeField]
-    private InputField _networkAddressField;
+    private TMP_InputField _networkAddressField;
 
     [SerializeField]
     private CustomNetworkManager _customNetworkManager;
