@@ -10,13 +10,18 @@ public class CharacterMenu : MonoBehaviour {
         RenderSettings.fog = false;
     }
 
+    public void ShowMenu()
+    {
+        gameObject.SetActive(true);
+    }
+
     // Destroys the current PlayerClass if there is any and creates a new one.
     // This method is called by the buttons on the CharacterMenu panel.    
     public void SetPlayerCharacter(PlayerCharacter character)
     {
         if (this.character != null)
         {
-            Destroy(this.character);
+            Destroy(this.character.gameObject);
         }
         this.character = Instantiate(character);
 
