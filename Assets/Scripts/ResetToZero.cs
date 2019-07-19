@@ -1,22 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ResetToZero : MonoBehaviour, IEndDragHandler
 {
-
-
-    private Slider slider;
+    private Slider _slider;
 
     private void Start()
     {
-        slider = gameObject.GetComponent<Slider>();
+        _slider = gameObject.GetComponent<Slider>();
     }
 
     public void OnEndDrag(PointerEventData data)
     {
-        slider.value = 0f;
+        _slider.value = 0f;
     }
 }

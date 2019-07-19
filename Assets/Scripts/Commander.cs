@@ -1,20 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class Commander : PlayerCharacter
 {
     [SerializeField]
-    private Map map;
+    private Map _map;
 
-    // Use this for initialization
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-        //camera.transform.SetParent(null);
+        // The map is not a child of the Commander because we don't want it to move with the submarine.
+        _map = Instantiate(_map);
+        _map.SetCameraPosition(Submarine.transform.position);
+    }
 
-        map = Instantiate(map);
-        map.SetCameraPosition(submarine.transform.position);
-    }	
+    public override void Deactivate()
+    {
+        Destroy(_map.gameObject);
+        base.Deactivate();
+    }
 }

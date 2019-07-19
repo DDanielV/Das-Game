@@ -2,15 +2,15 @@
 
 public class DetectableObject: MonoBehaviour
 {
-    private SpriteRenderer icon;
+    private SpriteRenderer _icon;
 
     private void Start()
     {
-        icon = GetComponent<SpriteRenderer>();
+        _icon = GetComponent<SpriteRenderer>();
     }
 
     public void SetIconActive(bool value)
     {       
-        icon.enabled = value;
+        _icon.enabled = value;
     }
 }

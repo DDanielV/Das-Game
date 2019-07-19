@@ -1,35 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class TorpedoTube : MonoBehaviour, IDropHandler
 {
+    // For now this is fine, we might want to change this in the future when we different types of submarines.
     [SerializeField]
-    private Transform torpedoTubeTransform;
-    private GameObject loadedTorpedoPrefab;
-    private Image tubeIcon;
-    private bool isLoaded;
-    private Color unloadedColor;
+    private Transform _torpedoTubeTransform;
+    private GameObject _loadedTorpedoPrefab;
+    private Image _tubeIcon;
+    private bool _isLoaded;
+    private Color _unloadedColor;
 
     private void Start()
     {
-        tubeIcon = GetComponent<Image>();
-        unloadedColor = tubeIcon.color;
+        _tubeIcon = GetComponent<Image>();
+        _unloadedColor = _tubeIcon.color;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        Load(ref TorpedoDragHandler.torpedoBeingDragged);
+        Load(TorpedoDragHandler._torpedoBeingDragged);
     }
 
     public void Fire()
     {
-        if (isLoaded)
+        if (_isLoaded)
         {
-            GameObject torpedo = Instantiate(loadedTorpedoPrefab, torpedoTubeTransform.position, torpedoTubeTransform.rotation);
+            GameObject torpedo = Instantiate(_loadedTorpedoPrefab, _torpedoTubeTransform.position, _torpedoTubeTransform.rotation);
             NetworkServer.Spawn(torpedo);
             Unload();
         }
@@ -37,14 +36,14 @@ public class TorpedoTube : MonoBehaviour, IDropHandler
 
     private void Unload()
     {
-        isLoaded = false;
-        tubeIcon.color = unloadedColor;        
+        _isLoaded = false;
+        _tubeIcon.color = _unloadedColor;        
     }
 
-    private void Load(ref GameObject torpedoPrefab)
+    private void Load(GameObject torpedoPrefab)
     {
-        loadedTorpedoPrefab = torpedoPrefab;
-        tubeIcon.color = Color.black;
-        isLoaded = true;
+        _loadedTorpedoPrefab = torpedoPrefab;
+        _tubeIcon.color = Color.black;
+        _isLoaded = true;
     }
 }

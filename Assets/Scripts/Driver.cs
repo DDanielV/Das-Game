@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// The Driver class is a PlayerCharacter that contains the code for controlling the submarine.
+// The Driver class is a PlayerCharacter that contains the code for controlling the _submarine.
 public class Driver : PlayerCharacter
 {
+    protected Rigidbody _rigidbody;
     private float steering, throttle, maxSteering, inputStearing, inputThrotle, inputDiving, speed, depthThrottle, maxSpeed;
     private float[] steeringArray = new float[10], throttleArray = new float[10];
     private int steeringArrayIndex, touchId;
@@ -11,30 +12,30 @@ public class Driver : PlayerCharacter
     public float addtorque = 800000;
     private Vector2 touchStartPos;
 
-    //canvas
+    //_canvas
     private Slider throttleSlider, depthSlider;
     private Image steeringwheelLeftSprite, steeringwheelRightSprite, steeringwheelPointerSprite;
     private Text speedText, depthText, directionText;
 
-    // Use this for initialization.
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
+        // Get a reference to the rigidbody of the submarine so we can control it.
+        _rigidbody = Submarine.GetComponent<Rigidbody>();
 
         GetSliders();
         GetImages();
         GetTexts();
 
-        maxSpeed = (addforce / rigidbody.drag - 0.01f * addforce) / rigidbody.mass;
+        maxSpeed = (addforce / _rigidbody.drag - 0.01f * addforce) / _rigidbody.mass;
 
         // Set the center of mass and intertiaTensor to the center of the object.
-        rigidbody.centerOfMass = Vector3.zero;
-        rigidbody.inertiaTensorRotation = Quaternion.identity;
+        _rigidbody.centerOfMass = Vector3.zero;
+        _rigidbody.inertiaTensorRotation = Quaternion.identity;
     }
 
     private void GetSliders()
     {
-        Slider[] sliderArray = canvas.GetComponentsInChildren<Slider>();
+        Slider[] sliderArray = _characterCanvas.GetComponentsInChildren<Slider>();
         foreach (Slider slider in sliderArray)
         {
             switch (slider.gameObject.name)
@@ -56,7 +57,7 @@ public class Driver : PlayerCharacter
 
     private void GetImages()
     {
-        Image[] imageArray = canvas.GetComponentsInChildren<Image>();
+        Image[] imageArray = _characterCanvas.GetComponentsInChildren<Image>();
         foreach (Image image in imageArray)
         {
             switch (image.gameObject.name)
@@ -90,7 +91,7 @@ public class Driver : PlayerCharacter
 
     private void GetTexts()
     {
-        Text[] textArray = canvas.GetComponentsInChildren<Text>();
+        Text[] textArray = _characterCanvas.GetComponentsInChildren<Text>();
         foreach (Text text in textArray)
         {
             switch (text.gameObject.name)
@@ -115,7 +116,7 @@ public class Driver : PlayerCharacter
     }
 
     // Update is called once per frame.
-    // Get the player input for controlling the submarine
+    // Get the player input for controlling the _submarine
     private void Update()
     {
         GetInput();
@@ -125,18 +126,18 @@ public class Driver : PlayerCharacter
     // FixedUpdate is called every fixed timestep.
     private void FixedUpdate()
     {
-        rigidbody.AddTorque(rigidbody.transform.up * steering * speed * addtorque);
-        rigidbody.velocity = rigidbody.transform.forward * speed;
-        rigidbody.AddForce(rigidbody.transform.forward * addforce * throttle);
+        _rigidbody.AddTorque(_rigidbody.transform.up * steering * speed * addtorque);
+        _rigidbody.velocity = _rigidbody.transform.forward * speed;
+        _rigidbody.AddForce(_rigidbody.transform.forward * addforce * throttle);
 
 
-        if (rigidbody.transform.position.y + depthThrottle * Time.deltaTime > 0)
+        if (_rigidbody.transform.position.y + depthThrottle * Time.deltaTime > 0)
         {
-            rigidbody.MovePosition(rigidbody.transform.position + new Vector3(0, -rigidbody.transform.position.y, 0));
+            _rigidbody.MovePosition(_rigidbody.transform.position + new Vector3(0, -_rigidbody.transform.position.y, 0));
         }
         else
         {
-            rigidbody.MovePosition(rigidbody.transform.position + rigidbody.transform.up * depthThrottle * Time.deltaTime);
+            _rigidbody.MovePosition(_rigidbody.transform.position + _rigidbody.transform.up * depthThrottle * Time.deltaTime);
         }
     }
 
@@ -184,10 +185,10 @@ public class Driver : PlayerCharacter
 
         //**converting the input values to the actual values**//
         throttle = (Mathf.Clamp(inputThrotle, -1f, -0.4f) + 0.7f) / 0.3f;
-        maxSteering = 1f - rigidbody.velocity.magnitude / maxSpeed * 0.7f; //0.7f betekent dat bij max speed nog (1-0.7)30% stuurkracht over hebt
+        maxSteering = 1f - _rigidbody.velocity.magnitude / maxSpeed * 0.7f; //0.7f betekent dat bij max speed nog (1-0.7)30% stuurkracht over hebt
         steering = inputStearing * 2 + Input.GetAxis("Horizontal");
         steering = Mathf.Clamp(steering, -maxSteering, maxSteering);
-        speed = rigidbody.velocity.magnitude * Vector3.Dot(rigidbody.transform.forward, Vector3.Normalize(rigidbody.velocity));
+        speed = _rigidbody.velocity.magnitude * Vector3.Dot(_rigidbody.transform.forward, Vector3.Normalize(_rigidbody.velocity));
         depthThrottle = inputDiving * 10;
     }
 
@@ -209,7 +210,7 @@ public class Driver : PlayerCharacter
 
     private void LateUpdate()
     {
-        if (camera.transform.position.y <= 0.1f) { RenderSettings.fog = true; } // (camera.transform.position.y <= 0) werkt niet goed, kans op een camera half onderwater maar geen fog
+        if (_characterCamera.transform.position.y <= 0.1f) { RenderSettings.fog = true; } // (_camera.transform.position.y <= 0) werkt niet goed, kans op een _camera half onderwater maar geen fog
         else { RenderSettings.fog = false; }
     }
 }

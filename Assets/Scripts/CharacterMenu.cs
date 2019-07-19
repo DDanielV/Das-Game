@@ -1,8 +1,19 @@
 ﻿using UnityEngine;
 
 // The CharacterMenu class alows the player to choose a PlayerClass
-public class CharacterMenu : MonoBehaviour {
-    private PlayerCharacter character;
+public class CharacterMenu : MonoBehaviour
+{
+    private enum PlayerCharacters
+    {
+        Driver = 0,
+        Gunner = 1,
+        Commander = 2
+    }
+
+    private PlayerCharacter _character = null;
+
+    // For now this is fine, we might want to change this in the future when there are multiple submarines.
+    [SerializeField] private GameObject _submarine;
 
     public void Start()
     {
@@ -10,15 +21,41 @@ public class CharacterMenu : MonoBehaviour {
         RenderSettings.fog = false;
     }
 
-    // Destroys the current PlayerClass if there is any and creates a new one.
-    // This method is called by the buttons on the CharacterMenu panel.    
-    public void SetPlayerCharacter(PlayerCharacter character)
+    public void ShowMenu()
     {
-        if (this.character != null)
+        gameObject.SetActive(true);
+    }
+
+    // Finds the character in the submarine and activates it.
+    // This method is called by the buttons on the CharacterMenu panel.
+    // Using an int since button can't use enums as parameter.
+    public void SetPlayerCharacter(int character)
+    {
+        // We deactivate the playercharacter gameobject if we already have one.
+        if (_character != null)
         {
-            Destroy(this.character);
+            _character.Deactivate();
         }
-        this.character = Instantiate(character);
+
+        switch (character)
+        {
+            case (int)PlayerCharacters.Driver:
+                _character = _submarine.GetComponentInChildren<Driver>(true);
+                break;
+            case (int)PlayerCharacters.Gunner:
+                _character = _submarine.GetComponentInChildren<Gunner>(true);
+                break;
+            case (int)PlayerCharacters.Commander:
+                _character = _submarine.GetComponentInChildren<Commander>(true);
+                break;
+        }
+
+        // We activate the chosen character and hide the character menu.
+        if (_character != null)
+        {
+            _character.Submarine = _submarine;
+            _character.Activate();
+        }
 
         gameObject.SetActive(false);
     }
