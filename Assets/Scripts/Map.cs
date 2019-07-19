@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    private GameObject mapPlane;
-    private Terrain terrain;
-    private Camera camera;
+    private GameObject _mapPlane;
+    private Terrain _terrain;
+    private Camera _camera;
 
     [SerializeField]
     private float detectionRadius = 10f;
@@ -17,12 +17,11 @@ public class Map : MonoBehaviour
     private Vector3 mapSize;
     private float maxZoom;
 
-    // Use this for initialization.
     private void Awake()
     {
-        mapPlane = transform.Find("MapPlane").gameObject;
-        terrain = Terrain.activeTerrain;
-        terrainResolution = terrain.terrainData.heightmapResolution - 1;
+        _mapPlane = transform.Find("MapPlane").gameObject;
+        _terrain = Terrain.activeTerrain;
+        terrainResolution = _terrain.terrainData.heightmapResolution - 1;
 
         lowestPointBelowWater = GetLowestPointBelowWater();
         CreateTexture();
@@ -34,8 +33,8 @@ public class Map : MonoBehaviour
         //The collider height should be twice the height of the lowest point in the terrain.
         collider.height = lowestPointBelowWater * 2;
 
-        camera = GetComponentInChildren<Camera>();
-        mapSize = terrain.terrainData.size;
+        _camera = GetComponentInChildren<Camera>();
+        mapSize = _terrain.terrainData.size;
         maxZoom = Mathf.Min(mapSize.x * (float)Screen.height / (float)Screen.width * 0.5f, mapSize.z / 2);
     }
 
@@ -48,26 +47,26 @@ public class Map : MonoBehaviour
     // Finds lowest point in the map.
     private float GetLowestPointBelowWater()
     {
-        float lowestPoint = terrain.terrainData.GetHeight(0, 0);
+        float lowestPoint = _terrain.terrainData.GetHeight(0, 0);
         for (int x = 0; x < terrainResolution; x++)
         {
             for (int y = 0; y < terrainResolution; y++)
             {
-                float currentHeight = terrain.terrainData.GetHeight(x, y);
+                float currentHeight = _terrain.terrainData.GetHeight(x, y);
                 lowestPoint = lowestPoint < currentHeight ? lowestPoint : currentHeight;
             }
         }
-        return lowestPoint + (waterLevel + terrain.transform.position.y);
+        return lowestPoint + (waterLevel + _terrain.transform.position.y);
     }
 
     private void CreateTexture()
     {
         // Places the mapPlane over the terrain and makes it the same size as the terrain.       
-        mapPlane.transform.position = new Vector3(terrain.transform.position.x + terrain.terrainData.size.x / 2, terrain.transform.position.y, terrain.transform.position.z + terrain.terrainData.size.z / 2);
-        mapPlane.transform.localScale = new Vector3(terrain.terrainData.size.x / 10, 0, terrain.terrainData.size.z / 10);
+        _mapPlane.transform.position = new Vector3(_terrain.transform.position.x + _terrain.terrainData.size.x / 2, _terrain.transform.position.y, _terrain.transform.position.z + _terrain.terrainData.size.z / 2);
+        _mapPlane.transform.localScale = new Vector3(_terrain.terrainData.size.x / 10, 0, _terrain.terrainData.size.z / 10);
 
-        // Place the mapPlane on a seperate layer only the attached camera can see.
-        mapPlane.layer = LayerMask.NameToLayer("Map");
+        // Place the mapPlane on a seperate layer only the attached _camera can see.
+        _mapPlane.layer = LayerMask.NameToLayer("Map");
 
         // Use a color array since this is much quicker than calling texture.SetPixel for each pixel in the texture.
         Color[] textureColors = new Color[terrainResolution * terrainResolution];
@@ -77,10 +76,10 @@ public class Map : MonoBehaviour
         {
             for (int x = 0; x < terrainResolution; x++)
             {
-                float terrainheight = terrain.terrainData.GetHeight(y, x) + terrain.transform.position.y;
+                float terrainheight = _terrain.terrainData.GetHeight(y, x) + _terrain.transform.position.y;
                 if (terrainheight > waterLevel)
                 {
-                    textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, 1); // Color for terrain above waterLevel
+                    textureColors[x + (y * terrainResolution)] = new Color(0.95f, 0.9f, 0.7f, 1); // Color for terrain above waterLevel.
                 }
                 else if (terrainheight > waterLevel - 6) // Vraag van Maarten: wat is 6? Is dit shoreOffset of iets dergelijks?
                 {
@@ -88,7 +87,7 @@ public class Map : MonoBehaviour
                 }
                 else
                 {
-                    //Vraag van Maarten: the numbers Mason what do they mean!
+                    // Todo: fix the magic numbers here.
                     textureColors[x + (y * terrainResolution)] = new Color(0, Mathf.Floor((terrainheight - lowestPointBelowWater - 6) / (waterLevel - lowestPointBelowWater - 6) * 10) / 10, 1, 1); // Color between blue(0,0,1,1) and cyan(0,1,1,1).
                 }
             }
@@ -98,7 +97,7 @@ public class Map : MonoBehaviour
         Texture2D texture = new Texture2D(terrainResolution, terrainResolution);
         texture.SetPixels(textureColors);
         texture.Apply();
-        mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
+        _mapPlane.GetComponent<Renderer>().material.mainTexture = texture;
     }
 
     private void Zoom()
@@ -122,16 +121,16 @@ public class Map : MonoBehaviour
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
             // ... change the orthographic size based on the change in distance between the touches.
-            camera.orthographicSize += deltaMagnitudeDiff;
+            _camera.orthographicSize += deltaMagnitudeDiff;
 
             // Make sure the orthographic size never drops below zero.
-            camera.orthographicSize = Mathf.Clamp(camera.orthographicSize, 250, maxZoom);
+            _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, 250, maxZoom);
 
-            if (camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x < terrain.transform.position.x) { camera.transform.position -= new Vector3(camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x - terrain.transform.position.x, 0, 0); }
-            if (camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z < terrain.transform.position.z) { camera.transform.position -= new Vector3(0, 0, camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + -terrain.transform.position.z); }
+            if (_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x < _terrain.transform.position.x) { _camera.transform.position -= new Vector3(_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x - _terrain.transform.position.x, 0, 0); }
+            if (_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z < _terrain.transform.position.z) { _camera.transform.position -= new Vector3(0, 0, _camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + -_terrain.transform.position.z); }
 
-            if (camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x > mapSize.x + terrain.transform.position.x) { camera.transform.position -= new Vector3(camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x - mapSize.x - terrain.transform.position.x, 0, 0); }
-            if (camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z > mapSize.z + terrain.transform.position.z) { camera.transform.position -= new Vector3(0, 0, camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z - mapSize.z - terrain.transform.position.z); }
+            if (_camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x > mapSize.x + _terrain.transform.position.x) { _camera.transform.position -= new Vector3(_camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x - mapSize.x - _terrain.transform.position.x, 0, 0); }
+            if (_camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z > mapSize.z + _terrain.transform.position.z) { _camera.transform.position -= new Vector3(0, 0, _camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z - mapSize.z - _terrain.transform.position.z); }
         }
     }
 
@@ -142,15 +141,15 @@ public class Map : MonoBehaviour
             Touch touchZero = Input.GetTouch(0);
             if (touchZero.phase == TouchPhase.Moved)
             {
-                Vector3 camera_movement = new Vector3(touchZero.deltaPosition.x, 0, touchZero.deltaPosition.y) * camera.orthographicSize / -300;
+                Vector3 camera_movement = new Vector3(touchZero.deltaPosition.x, 0, touchZero.deltaPosition.y) * _camera.orthographicSize / -300;
 
-                if (camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x + camera_movement.x < terrain.transform.position.x) { camera_movement.x = -camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x + terrain.transform.position.x; }
-                if (camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + camera_movement.z < terrain.transform.position.z) { camera_movement.z = -camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + terrain.transform.position.z; }
+                if (_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x + camera_movement.x < _terrain.transform.position.x) { camera_movement.x = -_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).x + _terrain.transform.position.x; }
+                if (_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + camera_movement.z < _terrain.transform.position.z) { camera_movement.z = -_camera.ScreenToWorldPoint(new Vector3(0, 0, 0)).z + _terrain.transform.position.z; }
 
-                if (camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x + camera_movement.x > mapSize.x + terrain.transform.position.x) { camera_movement.x = mapSize.x + terrain.transform.position.x - camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x; }
-                if (camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z + camera_movement.z > mapSize.z + terrain.transform.position.z) { camera_movement.z = mapSize.z + terrain.transform.position.z - camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z; }
+                if (_camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x + camera_movement.x > mapSize.x + _terrain.transform.position.x) { camera_movement.x = mapSize.x + _terrain.transform.position.x - _camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).x; }
+                if (_camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z + camera_movement.z > mapSize.z + _terrain.transform.position.z) { camera_movement.z = mapSize.z + _terrain.transform.position.z - _camera.ScreenToWorldPoint(new Vector3((float)Screen.width, (float)Screen.height, 0)).z; }
 
-                camera.transform.position += camera_movement;
+                _camera.transform.position += camera_movement;
             }
         }
     }
@@ -169,9 +168,9 @@ public class Map : MonoBehaviour
 
     public void SetCameraPosition(Vector3 submarineLocation)
     {
-        Vector3 cameraPosition = camera.transform.position;
+        Vector3 cameraPosition = _camera.transform.position;
         cameraPosition.x = submarineLocation.x;
         cameraPosition.z = submarineLocation.z;
-        camera.transform.position = cameraPosition;
+        _camera.transform.position = cameraPosition;
     }
 }

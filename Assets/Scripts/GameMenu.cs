@@ -6,8 +6,12 @@ public class GameMenu : MonoBehaviour
     [SerializeField]
     private CharacterMenu _characterMenu;
 
-    public void ShowHideMenu()
+    public void GameMenuButtonClicked()
     {
+        if (_characterMenu.gameObject.activeInHierarchy)
+        {
+            _characterMenu.gameObject.SetActive(false);            
+        }
         gameObject.SetActive(!gameObject.activeInHierarchy);
     }
 
