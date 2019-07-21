@@ -3383,8 +3383,30 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1753314992729718, guid: e2df34be142282749b6a7750d24e72ce,
         type: 3}
+    - target: {fileID: 1307667069049767561, guid: 808572b1d9a5dcf49816c13c60dd5db0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1977174645}
+    - target: {fileID: 1307667069049767561, guid: 808572b1d9a5dcf49816c13c60dd5db0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Fire
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 808572b1d9a5dcf49816c13c60dd5db0, type: 3}
+--- !u!114 &1977174645 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6461103660557312365, guid: 808572b1d9a5dcf49816c13c60dd5db0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1977174644}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5554cbd0d5a59a43b278a380d8a267f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2096255489
 GameObject:
   m_ObjectHideFlags: 0

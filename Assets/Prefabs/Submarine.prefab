@@ -1007,8 +1007,8 @@ GameObject:
   - component: {fileID: 1202293297269719037}
   - component: {fileID: 1199578003735946037}
   - component: {fileID: 1307319416663523087}
-  - component: {fileID: 1309202184661415619}
   - component: {fileID: 1307860945048621353}
+  - component: {fileID: 1057859455044578435}
   m_Layer: 5
   m_Name: TorpedoTubeRightButton
   m_TagString: Untagged
@@ -1072,19 +1072,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &1309202184661415619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420332839000713167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5554cbd0d5a59a43b278a380d8a267f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _torpedoTubeTransform: {fileID: 4405609029328336}
 --- !u!114 &1307860945048621353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1128,7 +1115,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1309202184661415619}
+      - m_Target: {fileID: 1057859455044578435}
         m_MethodName: Fire
         m_Mode: 1
         m_Arguments:
@@ -1141,6 +1128,19 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &1057859455044578435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420332839000713167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5554cbd0d5a59a43b278a380d8a267f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _torpedoTubeTransform: {fileID: 4405609029328336}
 --- !u!1 &1420355453721144341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1321,8 +1321,8 @@ GameObject:
   - component: {fileID: 1201897839865188659}
   - component: {fileID: 1199301083237668035}
   - component: {fileID: 1307981965516659225}
-  - component: {fileID: 1307716157636251907}
   - component: {fileID: 1307667069049767561}
+  - component: {fileID: 6461103660557312365}
   m_Layer: 5
   m_Name: TorpedoTubeLeftButton
   m_TagString: Untagged
@@ -1386,19 +1386,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &1307716157636251907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420427368238286721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5554cbd0d5a59a43b278a380d8a267f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _torpedoTubeTransform: {fileID: 4834000651077878}
 --- !u!114 &1307667069049767561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1442,7 +1429,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1307716157636251907}
+      - m_Target: {fileID: 6461103660557312365}
         m_MethodName: Fire
         m_Mode: 1
         m_Arguments:
@@ -1455,6 +1442,19 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &6461103660557312365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420427368238286721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5554cbd0d5a59a43b278a380d8a267f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _torpedoTubeTransform: {fileID: 4834000651077878}
 --- !u!1 &1420444658617056471
 GameObject:
   m_ObjectHideFlags: 0
