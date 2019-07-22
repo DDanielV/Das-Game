@@ -1,8 +1,9 @@
-﻿using UnityEngine.Networking;
+﻿using UnityEngine;
+using UnityEngine.Networking;
 
 public abstract class ShipBase : NetworkBehaviour
 {
-    [SyncVar] private int _hitpoints;
+    [SyncVar][SerializeField] private int _hitpoints;
 
     public void DoDamage(int damage)
     {
