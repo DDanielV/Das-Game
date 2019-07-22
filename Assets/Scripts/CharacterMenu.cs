@@ -17,6 +17,7 @@ public class CharacterMenu : MonoBehaviour
 
     public void Start()
     {
+        // Todo: We want to move this code to the fog object itself.
         //bug in unity, als fog niet aan staat bij createn van de APK wordt de shader hiervoor ook niet toegevoegd aan de apk, daarom wordt hier de fog uigezet aan het begin van het spel
         RenderSettings.fog = false;
     }
