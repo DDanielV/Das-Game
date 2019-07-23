@@ -1,4 +1,5 @@
 ﻿using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class Submarine : ShipBase
 {
