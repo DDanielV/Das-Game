@@ -1,0 +1,23 @@
+Download Blender
+
+Set to Metrics
+Scale object N
+Reset scale to 1 Ctrl A
+Rotate object -90 N
+Reset rotation Ctrl A
+Rotate object 90 N
+Move cursor to selected Shift S
+Move origin to cursor Ctrl Shift Alt C
+Delete lights, camera etc.
+
+Export
+FBX
+FBX Units Scale
+Z Forward, Y Up
+
+Import in Unity
+Dont import Camera, Lights, Animation
+
+https://blog.imphenzia.com/blender-to-unity/
+
+
